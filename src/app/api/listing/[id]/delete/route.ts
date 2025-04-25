@@ -3,19 +3,26 @@ import connectDB from "@/lib/connectDB";
 import Listing from "@/models/Listing";
 import { verifyToken } from "@/utils/auth";
 
+// Correctly export DELETE handler for dynamic route [id]
 export async function DELETE(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
   try {
+    // Connect to the database
     await connectDB();
 
-    const { id } = context.params; // Accessing params directly from context
+    const { id } = context.params; // Correctly accessing the id from context
 
+    // Validate id
     if (!id) {
-      return NextResponse.json({ error: "Listing ID is required" });
+      return NextResponse.json(
+        { error: "Listing ID is required" },
+        { status: 400 }
+      );
     }
 
+    // Authorization logic
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -35,6 +42,7 @@ export async function DELETE(
 
     const userId = decoded.id;
 
+    // Find and validate listing
     const listing = await Listing.findById(id);
     if (!listing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
@@ -46,6 +54,7 @@ export async function DELETE(
       );
     }
 
+    // Delete the listing
     await Listing.findByIdAndDelete(id);
 
     return NextResponse.redirect(`${process.env.WEB_URL}`);
