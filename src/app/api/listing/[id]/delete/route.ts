@@ -5,12 +5,12 @@ import { verifyToken } from "@/utils/auth";
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     await connectDB();
 
-    const { id } = context.params; // Correct the destructuring
+    const { id } = params;
 
     if (!id) {
       return NextResponse.json({ error: "Listing ID is required" });
