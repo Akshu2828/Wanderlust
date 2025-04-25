@@ -8,7 +8,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const id = params.id;
     await connectDB();
 
     const authHeader = req.headers.get("authorization");
