@@ -3,13 +3,12 @@ import connectDB from "@/lib/connectDB";
 import Listing from "@/models/Listing";
 import { verifyToken } from "@/utils/auth";
 
-interface Context {
-  params: { id: string };
-}
-
-export async function DELETE(req: NextRequest, context: Context) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const id = context.params.id;
+    const { id } = params;
     await connectDB();
 
     const authHeader = req.headers.get("authorization");
