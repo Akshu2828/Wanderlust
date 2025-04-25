@@ -8,7 +8,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   await connectDB();
-  const reviewId = params.id;
+  const { id } = params;
 
   const authHeader = req.headers.get("authorization");
   if (!authHeader)
@@ -18,7 +18,7 @@ export async function DELETE(
 
   try {
     const decoded = verifyToken(token);
-    const review = await Review.findById(reviewId);
+    const review = await Review.findById(id);
 
     if (!review) {
       return NextResponse.json(
@@ -31,7 +31,7 @@ export async function DELETE(
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    await Review.findByIdAndDelete(reviewId);
+    await Review.findByIdAndDelete(id);
     return NextResponse.json(
       { message: "Review deleted successfully" },
       { status: 200 }

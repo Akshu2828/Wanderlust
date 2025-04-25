@@ -7,10 +7,11 @@ export default function ListingDetailPage({
 }: {
   params: { id: string };
 }) {
+  const { id } = params;
   return (
     <>
       <Navbar />
-      <ListingDetailsClient id={params.id} />
+      <ListingDetailsClient id={id} />
       <Footer />
     </>
   );

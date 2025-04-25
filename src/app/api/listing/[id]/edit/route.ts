@@ -37,8 +37,10 @@ export async function POST(
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
+    const { id } = params;
+
     const userId = decoded.id;
-    const listing = await Listing.findById(params.id);
+    const listing = await Listing.findById(id);
     if (!listing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
     }
@@ -88,17 +90,15 @@ export async function POST(
       image: imageUrl,
     };
 
-    const updatedListing = await Listing.findByIdAndUpdate(
-      params.id,
-      updatedData,
-      { new: true }
-    );
+    const updatedListing = await Listing.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
 
     if (!updatedListing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
     }
 
-    return NextResponse.redirect(`${process.env.WEB_URL}/listing/${params.id}`);
+    return NextResponse.redirect(`${process.env.WEB_URL}/listing/${id}`);
   } catch (error) {
     console.log(error);
     return NextResponse.json(

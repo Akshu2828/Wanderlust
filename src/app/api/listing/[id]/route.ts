@@ -11,7 +11,13 @@ export async function GET(
   try {
     await connectDB();
 
-    const listing = await Listing.findById(params.id)
+    const { id } = params;
+
+    if (!id) {
+      return NextResponse.json({ error: "Listing ID is required" });
+    }
+
+    const listing = await Listing.findById(id)
       .populate("owner", "name email")
       .populate({
         path: "reviews",

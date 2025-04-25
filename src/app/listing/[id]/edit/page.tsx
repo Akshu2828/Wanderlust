@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface Listing {
   _id: string;
@@ -15,11 +15,10 @@ interface Listing {
   categories: string[];
 }
 
-export default function EditListingPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function EditListingPage() {
+  const params = useParams();
+  const id = params?.id as string;
+
   const [listing, setListing] = useState<Listing | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -32,9 +31,10 @@ export default function EditListingPage({
   const router = useRouter();
 
   useEffect(() => {
+    if (!id) return;
     async function fetchListing() {
       try {
-        const res = await fetch(`/api/listing/${params.id}`);
+        const res = await fetch(`/api/listing/${id}`);
         const data = await res.json();
         setListing(data.listing);
         setTitle(data.listing.title);
@@ -49,7 +49,7 @@ export default function EditListingPage({
     }
 
     fetchListing();
-  }, [params.id]);
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +73,7 @@ export default function EditListingPage({
     }
 
     try {
-      const res = await fetch(`/api/listing/${params.id}/edit`, {
+      const res = await fetch(`/api/listing/${id}/edit`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -82,7 +82,7 @@ export default function EditListingPage({
       });
 
       if (res.ok) {
-        router.push(`/listing/${params.id}`);
+        router.push(`/listing/${id}`);
       } else {
         const error = await res.json();
         alert(`Error: ${error.error}`);
