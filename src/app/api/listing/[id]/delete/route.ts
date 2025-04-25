@@ -8,8 +8,13 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
     await connectDB();
+
+    const { id } = params;
+
+    if (!id) {
+      return NextResponse.json({ error: "Listing ID is required" });
+    }
 
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
