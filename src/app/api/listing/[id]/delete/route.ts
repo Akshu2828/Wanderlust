@@ -5,9 +5,10 @@ import { verifyToken } from "@/utils/auth";
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
+    const id = context.params.id;
     await connectDB();
 
     const authHeader = req.headers.get("authorization");
@@ -28,7 +29,6 @@ export async function DELETE(
     }
 
     const userId = decoded.id;
-    const { id } = params;
 
     const listing = await Listing.findById(id);
     if (!listing) {
