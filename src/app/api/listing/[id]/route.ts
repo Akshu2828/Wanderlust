@@ -5,7 +5,9 @@ import Listing from "@/models/Listing";
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const id = req.nextUrl.searchParams.get("id");
+    const pathParts = req.nextUrl.pathname.split("/");
+    const id = pathParts[pathParts.length - 2];
+    console.log("LISTINGID", id);
 
     const listing = await Listing.findById(id);
 
