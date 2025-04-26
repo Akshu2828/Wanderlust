@@ -1,4 +1,7 @@
+// app/utils/Logout.ts
 export function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "/";
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  }
 }
