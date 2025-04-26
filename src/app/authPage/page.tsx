@@ -2,13 +2,12 @@
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import AuthMessage from "@/components/AuthMessage"; // 👈 import the new component
 
 const AuthPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const authMessage = searchParams.get("message");
 
   const [mode, setMode] = useState<"register" | "login">("register");
   const [formData, setFormData] = useState({
@@ -59,13 +58,13 @@ const AuthPage = () => {
 
   return (
     <>
-      <Navbar></Navbar>
-      <div className="p-4 max-w-md h-[80vh]  mx-auto flex flex-col justify-center ">
-        {authMessage && (
-          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-            {authMessage}
-          </div>
-        )}
+      <Navbar />
+      <div className="p-4 max-w-md h-[80vh] mx-auto flex flex-col justify-center">
+        {/* Wrap in Suspense 👇 */}
+        <Suspense fallback={<div>Loading message...</div>}>
+          <AuthMessage />
+        </Suspense>
+
         <h2 className="text-2xl text-red-500 font-bold mb-4 text-center">
           {mode === "register"
             ? "Register on Wanderlust"
@@ -81,7 +80,7 @@ const AuthPage = () => {
               placeholder="Name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-2 border rounded border-gray-400 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full p-2 border border-gray-400 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
               required
             />
           )}
@@ -91,7 +90,7 @@ const AuthPage = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full p-2 border rounded border-gray-400 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
+            className="w-full p-2 border border-gray-400 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
           <input
@@ -100,7 +99,7 @@ const AuthPage = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full p-2 border rounded border-gray-400 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
+            className="w-full p-2 border border-gray-400 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
           <button
@@ -123,7 +122,7 @@ const AuthPage = () => {
           </button>
         </p>
       </div>
-      <Footer></Footer>
+      <Footer />
     </>
   );
 };
