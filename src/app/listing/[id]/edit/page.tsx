@@ -18,6 +18,7 @@ interface Listing {
 export default function EditListingPage() {
   const params = useParams();
   const id = params?.id as string;
+  console.log("LISITNGID", id);
 
   const [listing, setListing] = useState<Listing | null>(null);
   const [title, setTitle] = useState("");
@@ -34,8 +35,16 @@ export default function EditListingPage() {
     if (!id) return;
     async function fetchListing() {
       try {
-        const res = await fetch(`/api/listing/${id}`);
+        const token = localStorage.getItem("token");
+        const res = await fetch(`/api/listing/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         const data = await res.json();
+        console.log("RESPONSE DATA", data);
         setListing(data.listing);
         setTitle(data.listing.title);
         setDescription(data.listing.description);
@@ -44,7 +53,7 @@ export default function EditListingPage() {
         setLocation(data.listing.location);
         setCategories(data.listing.categories.join(", "));
       } catch (error) {
-        console.error("Failed to fetch listing:", error);
+        console.log(error);
       }
     }
 

@@ -7,7 +7,6 @@ export async function DELETE(req: NextRequest) {
   try {
     await connectDB();
 
-    // Extract params from the URL
     const id = req.nextUrl.searchParams.get("id");
 
     if (!id) {

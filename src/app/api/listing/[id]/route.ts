@@ -1,31 +1,16 @@
-import { NextResponse, NextRequest } from "next/server";
-import Listing from "@/models/Listing";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
-import "@/models/User";
-import "@/models/Review";
+import Listing from "@/models/Listing";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     await connectDB();
+    const { id } = params;
 
-    const id = req.nextUrl.searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json(
-        { error: "Listing ID is required" },
-        { status: 400 }
-      );
-    }
-
-    const listing = await Listing.findById(id)
-      .populate("owner", "name email")
-      .populate({
-        path: "reviews",
-        populate: {
-          path: "author",
-          select: "name email",
-        },
-      });
+    const listing = await Listing.findById(id);
 
     if (!listing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
@@ -33,7 +18,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ listing });
   } catch (error) {
-    console.error("Error fetching listing:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to fetch listing" },
+      { status: 500 }
+    );
   }
 }

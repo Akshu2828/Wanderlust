@@ -5,11 +5,12 @@ import { verifyToken } from "@/utils/auth";
 
 export async function DELETE(req: NextRequest) {
   await connectDB();
-  const id = req.nextUrl.searchParams.get("id");
+  const pathParts = req.nextUrl.pathname.split("/");
+  const id = pathParts[pathParts.length - 1];
 
   if (!id) {
     return NextResponse.json(
-      { error: "Listing ID is required" },
+      { error: "Review ID is required" },
       { status: 400 }
     );
   }

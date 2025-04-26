@@ -9,12 +9,12 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
-    const id = req.nextUrl.searchParams.get("id");
+    const pathParts = req.nextUrl.pathname.split("/");
+    const id = pathParts[pathParts.length - 2];
 
     if (!id) {
       return NextResponse.json(

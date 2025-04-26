@@ -39,7 +39,7 @@ export default function ListingActions({ listingId, ownerId }: Props) {
     );
     if (!confirm) return;
 
-    const res = await fetch(`/api/listing/${listingId}/delete`, {
+    const res = await fetch(`/api/listing/delete?id=${listingId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

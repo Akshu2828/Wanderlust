@@ -16,6 +16,7 @@ const CreateListing = () => {
   const [city, setCity] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
 
@@ -28,8 +29,13 @@ const CreateListing = () => {
     if (typeof window !== "undefined") {
       const data = localStorage.getItem("token");
       setToken(data || "");
+      setLoading(false);
     }
   }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   if (!token) {
     router.push("/authPage?message=Please%20Log%20In%20to%20create%20listing");

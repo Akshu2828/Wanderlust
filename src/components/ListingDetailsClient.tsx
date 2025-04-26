@@ -60,8 +60,9 @@ export default function ListingDetailsClient({ id }: { id: string }) {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const res = await fetch(`/api/listing/${id}`);
+        const res = await fetch(`/api/listing?id=${id}`);
         const data = await res.json();
+        console.log("RESPONSE DATA", data);
 
         setListing(data.listing);
       } catch (error) {
@@ -74,7 +75,8 @@ export default function ListingDetailsClient({ id }: { id: string }) {
 
   const refreshListing = async () => {
     try {
-      const res = await fetch(`/api/listing/${id}`);
+      const res = await fetch(`/api/listing?id=${id}`);
+
       const data = await res.json();
       setListing(data.listing);
     } catch (err) {
