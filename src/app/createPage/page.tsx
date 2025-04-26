@@ -2,7 +2,7 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCoordinates } from "@/utils/getCoordinates";
 import { categoryValues } from "@/utils/categories";
 import Select from "react-select";
@@ -15,6 +15,7 @@ const CreateListing = () => {
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
+  const [token, setToken] = useState("");
 
   const router = useRouter();
 
@@ -23,7 +24,13 @@ const CreateListing = () => {
     label: cat,
   }));
 
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const data = localStorage.getItem("token");
+      setToken(data || "");
+    }
+  }, []);
+
   if (!token) {
     router.push("/authPage?message=Please%20Log%20In%20to%20create%20listing");
     return null;

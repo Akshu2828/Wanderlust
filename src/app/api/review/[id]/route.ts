@@ -3,12 +3,16 @@ import connectDB from "@/lib/connectDB";
 import Review from "@/models/Review";
 import { verifyToken } from "@/utils/auth";
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest) {
   await connectDB();
-  const { id } = params;
+  const id = req.nextUrl.searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "Listing ID is required" },
+      { status: 400 }
+    );
+  }
 
   const authHeader = req.headers.get("authorization");
   if (!authHeader)
@@ -27,7 +31,12 @@ export async function DELETE(
       );
     }
 
-    if (review.author.toString() !== decoded.id) {
+    if (
+      typeof decoded !== "object" ||
+      !decoded ||
+      !("id" in decoded) ||
+      review.author.toString() !== decoded.id
+    ) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 

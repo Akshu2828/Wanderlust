@@ -4,17 +4,17 @@ import connectDB from "@/lib/connectDB";
 import "@/models/User";
 import "@/models/Review";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    const { id } = params;
+    const id = req.nextUrl.searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ error: "Listing ID is required" });
+      return NextResponse.json(
+        { error: "Listing ID is required" },
+        { status: 400 }
+      );
     }
 
     const listing = await Listing.findById(id)

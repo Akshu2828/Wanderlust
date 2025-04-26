@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import Listing from "@/models/Listing";
 import { v2 as cloudinary } from "cloudinary";
@@ -10,12 +10,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest) {
   try {
     await connectDB();
+
+    const id = req.nextUrl.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Listing ID is required" },
+        { status: 400 }
+      );
+    }
 
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -36,8 +42,6 @@ export async function POST(
       console.log("JWT Verify Error:", error);
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-
-    const { id } = params;
 
     const userId = decoded.id;
     const listing = await Listing.findById(id);
