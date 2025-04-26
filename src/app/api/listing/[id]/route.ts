@@ -5,8 +5,11 @@ import Listing from "@/models/Listing";
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const pathParts = req.nextUrl.pathname.split("/");
-    const id = pathParts[pathParts.length - 2];
+    const id = req.nextUrl.searchParams.get("id"); // ✅ GET id safely
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+    }
     console.log("LISTINGID", id);
 
     const listing = await Listing.findById(id);

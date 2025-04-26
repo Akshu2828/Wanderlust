@@ -36,7 +36,7 @@ export default function EditListingPage() {
     async function fetchListing() {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`/api/listing/${id}`, {
+        const res = await fetch(`/api/listing?id=${id}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
