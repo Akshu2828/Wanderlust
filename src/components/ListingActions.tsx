@@ -38,6 +38,7 @@ export default function ListingActions({ listingId, ownerId }: Props) {
       "Are you sure you want to delete this listing?"
     );
     if (!confirm) return;
+    console.log("LISTINGID", listingId);
 
     const res = await fetch(`/api/listing/delete?id=${listingId}`, {
       method: "DELETE",
