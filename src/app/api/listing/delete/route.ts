@@ -8,6 +8,7 @@ export async function DELETE(req: NextRequest) {
     await connectDB();
 
     const id = req.nextUrl.searchParams.get("id");
+    console.log("DELETEID", id);
 
     if (!id) {
       return NextResponse.json(
