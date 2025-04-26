@@ -2,13 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import Listing from "@/models/Listing";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const { id } = params;
+    const id = req.nextUrl.searchParams.get("id");
 
     const listing = await Listing.findById(id);
 
