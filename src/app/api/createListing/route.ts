@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import Listing from "@/models/Listing";
 import { v2 as cloudinary } from "cloudinary";
-import { Readable } from "stream";
 import { verifyToken } from "@/utils/auth";
 
 cloudinary.config({
@@ -11,40 +10,26 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-function bufferToStream(buffer: Buffer) {
-  return new Readable({
-    read() {
-      this.push(buffer);
-      this.push(null);
-    },
-  });
-}
+// Helper: Upload image buffer to Cloudinary using Base64 (Edge compatible)
+async function uploadImage(
+  buffer: Buffer,
+  fileType: string
+): Promise<{ secure_url: string }> {
+  const base64String = buffer.toString("base64");
+  const dataUri = `data:${fileType};base64,${base64String}`;
 
-async function uploadImage(buffer: Buffer): Promise<{ secure_url: string }> {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder: "wanderlust",
-        allowed_formats: ["jpg", "jpeg", "png", "webp"],
-      },
-      (error, result) => {
-        if (error) {
-          console.log(error.http_code, error.message);
-          console.error("Cloudinary Upload Error:", error);
-          reject(new Error("Cloudinary upload failed"));
-        } else {
-          resolve(result as { secure_url: string });
-        }
-      }
-    );
-    bufferToStream(buffer).pipe(stream);
+  return await cloudinary.uploader.upload(dataUri, {
+    folder: "wanderlust",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
   });
 }
 
 export async function POST(req: NextRequest) {
   try {
+    // Connect to DB
     await connectDB();
 
+    // Authorization
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -52,7 +37,6 @@ export async function POST(req: NextRequest) {
 
     const token = authHeader.split(" ")[1];
     const secret = process.env.TOKEN_SECRET;
-
     if (!secret) throw new Error("TOKEN_SECRET is not defined");
 
     let decoded: any;
@@ -65,33 +49,27 @@ export async function POST(req: NextRequest) {
 
     const userId = decoded.id;
 
+    // Parse FormData
     const formData = await req.formData();
-    console.log("Got formData:", formData);
-
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
     const price = Number(formData.get("price"));
     const location = formData.get("location") as string;
     const country = formData.get("country") as string;
     const categories = formData.getAll("categories");
-
-    const file = formData.get("image") as File;
-    console.log("Got file:", file);
-
     const coordinates = JSON.parse(formData.get("coordinates") as string);
+    const file = formData.get("image") as File;
 
     if (!file) {
       return NextResponse.json({ error: "Image is required" }, { status: 400 });
     }
 
+    // Upload Image
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    console.log("Connecting to Cloudinary...");
-    console.log(cloudinary.config());
+    const uploadResult = await uploadImage(buffer, file.type);
 
-    const uploadResult = await uploadImage(buffer);
-    console.log("Uploaded image:", uploadResult);
-
+    // Create Listing
     const newListing = new Listing({
       title,
       description,
@@ -107,13 +85,16 @@ export async function POST(req: NextRequest) {
     await newListing.save();
 
     return NextResponse.json({
-      message: "Listing created!",
+      message: "Listing created successfully!",
       listing: newListing,
     });
   } catch (error) {
-    console.error("Create listing error:", error);
+    console.error("Create Listing Error:", error);
+
     return NextResponse.json(
-      { error: "Something went wrong" },
+      {
+        error: error instanceof Error ? error.message : "Something went wrong",
+      },
       { status: 500 }
     );
   }
