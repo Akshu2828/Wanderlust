@@ -9,6 +9,21 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// Helper: Upload image buffer to Cloudinary
+async function uploadImage(
+  buffer: Buffer,
+  fileType: string
+): Promise<{ secure_url: string }> {
+  const base64String = buffer.toString("base64");
+  const dataUri = `data:${fileType};base64,${base64String}`;
+
+  return await cloudinary.uploader.upload(dataUri, {
+    folder: "wanderlust",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
@@ -23,34 +38,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Authorization
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const token = authHeader.split(" ")[1];
-
     const secret = process.env.TOKEN_SECRET;
-
     if (!secret) throw new Error("TOKEN_SECRET is not defined");
 
     let decoded: any;
-
     try {
       decoded = verifyToken(token);
     } catch (error) {
-      console.log("JWT Verify Error:", error);
+      console.error("JWT Verify Error:", error);
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
     const userId = decoded.id;
+
+    // Find listing
     const listing = await Listing.findById(id);
     if (!listing) {
       return NextResponse.json({ error: "Listing not found" }, { status: 404 });
     }
+
     if (listing.owner.toString() !== userId) {
       return NextResponse.json(
-        { error: "You are not the Owner of this Listing" },
+        { error: "You are not the owner of this listing" },
         { status: 403 }
       );
     }
@@ -60,25 +76,12 @@ export async function POST(req: NextRequest) {
 
     let imageUrl = listing.image;
 
+    // If new image uploaded
     if (image && typeof image === "object") {
       const arrayBuffer = await image.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
-      const uploadResult = await new Promise<{ secure_url: string }>(
-        (resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream(
-              {
-                folder: "wanderlust",
-              },
-              (err, result) => {
-                if (err || !result) return reject(err);
-                resolve({ secure_url: result.secure_url });
-              }
-            )
-            .end(buffer);
-        }
-      );
+      const uploadResult = await uploadImage(buffer, image.type);
       imageUrl = uploadResult.secure_url;
     }
 
@@ -99,14 +102,20 @@ export async function POST(req: NextRequest) {
     });
 
     if (!updatedListing) {
-      return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Listing not found after update" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.redirect(`${process.env.WEB_URL}/listing/${id}`);
   } catch (error) {
-    console.log(error);
+    console.error("Create Listing Error:", error);
+
     return NextResponse.json(
-      { error: "Failed to update listing" },
+      {
+        error: error instanceof Error ? error.message : "Something went wrong",
+      },
       { status: 500 }
     );
   }

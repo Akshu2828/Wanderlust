@@ -10,7 +10,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Helper: Upload image buffer to Cloudinary using Base64 (Edge compatible)
 async function uploadImage(
   buffer: Buffer,
   fileType: string
@@ -26,10 +25,8 @@ async function uploadImage(
 
 export async function POST(req: NextRequest) {
   try {
-    // Connect to DB
     await connectDB();
 
-    // Authorization
     const authHeader = req.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
