@@ -49,7 +49,7 @@ export async function DELETE(req: NextRequest) {
 
     await Listing.findByIdAndDelete(id);
 
-    return NextResponse.redirect(`${process.env.WEB_URL}`);
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

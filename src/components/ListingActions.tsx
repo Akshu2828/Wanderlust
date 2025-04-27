@@ -48,7 +48,7 @@ export default function ListingActions({ listingId, ownerId }: Props) {
     });
 
     if (res.ok) {
-      router.push("/");
+      window.location.href = process.env.WEB_URL || "/";
     } else {
       const error = await res.json();
       alert(error?.error || "Failed to delete listing");
