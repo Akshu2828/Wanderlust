@@ -30,6 +30,7 @@ async function uploadImage(buffer: Buffer): Promise<{ secure_url: string }> {
       },
       (error, result) => {
         if (error) {
+          console.log(error.http_code, error.message);
           console.error("Cloudinary Upload Error:", error);
           reject(new Error("Cloudinary upload failed"));
         } else {
@@ -87,11 +88,7 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     console.log("Connecting to Cloudinary...");
-    console.log("Cloudinary config check:", {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
+    console.log(cloudinary.config());
 
     const uploadResult = await uploadImage(buffer);
     console.log("Uploaded image:", uploadResult);
