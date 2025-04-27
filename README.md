@@ -4,6 +4,7 @@ Built with love using Next.js 14, MongoDB, Cloudinary, and more.
 
 🚀 Features
 🧵 Create Listings — Add your travel stays with title, description, location, price, and images.
+🧵 Add Reviews - Add Reviews on listing with rating out of five and delete review.
 
 🖼️ Image Upload — Upload beautiful images (stored in Cloudinary).
 
@@ -13,7 +14,7 @@ Built with love using Next.js 14, MongoDB, Cloudinary, and more.
 
 🔒 Authentication — Protected routes using JWT (JSON Web Tokens).
 
-🗺️ Map Integration — (if you added Mapbox/MapTiler) show exact property location on a map.
+🗺️ Map Integration — show exact property location on a map using MapTiler.
 
 🌐 Responsive UI — Mobile-first design using Tailwind CSS.
 
