@@ -20,6 +20,23 @@ function bufferToStream(buffer: Buffer) {
   });
 }
 
+async function uploadImage(buffer: Buffer): Promise<{ secure_url: string }> {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "wanderlust" },
+      (error, result) => {
+        if (error) {
+          console.error("Cloudinary Upload Error:", error);
+          reject(new Error("Cloudinary upload failed"));
+        } else {
+          resolve(result as { secure_url: string });
+        }
+      }
+    );
+    bufferToStream(buffer).pipe(stream);
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
@@ -67,18 +84,8 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
     console.log("Connecting to Cloudinary...");
 
-    const stream = bufferToStream(buffer);
-    const uploadResult = await new Promise<any>((resolve, reject) => {
-      const streamUpload = cloudinary.uploader.upload_stream(
-        { folder: "wanderlust" },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-      stream.pipe(streamUpload);
-    });
-    console.log("Uploading image...");
+    const uploadResult = await uploadImage(buffer);
+    console.log("Uploaded image:", uploadResult);
 
     const newListing = new Listing({
       title,
