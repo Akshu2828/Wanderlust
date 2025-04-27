@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🧳 Wanderlust - Travel Listing Website
+Welcome to Wanderlust — a full-stack travel listing platform where users can create, view, edit, and delete property listings for travelers!
+Built with love using Next.js 14, MongoDB, Cloudinary, and more.
 
-## Getting Started
+🚀 Features
+🧵 Create Listings — Add your travel stays with title, description, location, price, and images.
 
-First, run the development server:
+🖼️ Image Upload — Upload beautiful images (stored in Cloudinary).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+✏️ Edit Listings — Update existing listings (including uploading a new image).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+❌ Delete Listings — Remove your own listings securely.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🔒 Authentication — Protected routes using JWT (JSON Web Tokens).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🗺️ Map Integration — (if you added Mapbox/MapTiler) show exact property location on a map.
 
-## Learn More
+🌐 Responsive UI — Mobile-first design using Tailwind CSS.
 
-To learn more about Next.js, take a look at the following resources:
+🛠️ Tech Stack
+Frontend: Next.js 14 (App Router)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Backend: Node.js + Next.js API Routes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Database: MongoDB Atlas
 
-## Deploy on Vercel
+Storage: Cloudinary (for image hosting)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Authentication: JWT
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Styling: Tailwind CSS
+
+Deployment: Vercel (Frontend + Backend together)
+
