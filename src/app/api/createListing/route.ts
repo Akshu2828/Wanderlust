@@ -23,7 +23,11 @@ function bufferToStream(buffer: Buffer) {
 async function uploadImage(buffer: Buffer): Promise<{ secure_url: string }> {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: "wanderlust" },
+      {
+        folder: "wanderlust",
+        resource_type: "image",
+        allowed_formats: ["jpg", "jpeg", "png", "webp"],
+      },
       (error, result) => {
         if (error) {
           console.error("Cloudinary Upload Error:", error);
