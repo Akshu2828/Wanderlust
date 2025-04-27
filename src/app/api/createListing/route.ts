@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
     const userId = decoded.id;
 
     const formData = await req.formData();
+    console.log("Got formData:", formData);
 
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
@@ -54,6 +55,8 @@ export async function POST(req: NextRequest) {
     const categories = formData.getAll("categories");
 
     const file = formData.get("image") as File;
+    console.log("Got file:", file);
+
     const coordinates = JSON.parse(formData.get("coordinates") as string);
 
     if (!file) {
@@ -62,6 +65,7 @@ export async function POST(req: NextRequest) {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    console.log("Connecting to Cloudinary...");
 
     const stream = bufferToStream(buffer);
     const uploadResult = await new Promise<any>((resolve, reject) => {
@@ -74,6 +78,7 @@ export async function POST(req: NextRequest) {
       );
       stream.pipe(streamUpload);
     });
+    console.log("Uploading image...");
 
     const newListing = new Listing({
       title,
