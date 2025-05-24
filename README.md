@@ -1,10 +1,9 @@
-Wanderlust - Travel Listing Website
-Welcome to Wanderlust — a full-stack travel listing platform where users can create, view, edit, and delete property listings for travelers!
-Built with love using Next.js 14, MongoDB, Cloudinary, and more.
+# Wanderlust - Travel Listing Website
+### Welcome to Wanderlust — a full-stack travel listing platform where users can create, view, edit, and delete property listings for travelers! Built with love using Next.js 14, MongoDB, Cloudinary, and more.
 
-Features
-Create Listings — Add your travel stays with title, description, location, price, and images.
-Add Reviews - Add Reviews on listing with rating out of five and delete review.
+## Features
+- Create Listings — Add your travel stays with title, description, location, price, and images.
+- Add Reviews - Add Reviews on listing with rating out of five and delete review.
 
 Image Upload — Upload beautiful images (stored in Cloudinary).
 
