@@ -12,17 +12,13 @@
 - Responsive UI — Mobile-first design using Tailwind CSS.
 
 ## Tech Stack
-Frontend: Next.js
+Frontend: Next.js, Tailwind CSS, TypeScript, Cloudinary
 
 Backend: Next.js API Routes
 
 Database: MongoDB Atlas
 
-Storage: Cloudinary (for image hosting)
-
 Authentication: JWT
-
-Styling: Tailwind CSS
 
 Deployment: Vercel (Frontend + Backend together)
 
