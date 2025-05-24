@@ -4,20 +4,14 @@
 ## Features
 - Create Listings — Add your travel stays with title, description, location, price, and images.
 - Add Reviews - Add Reviews on listing with rating out of five and delete review.
+- Image Upload — Upload beautiful images (stored in Cloudinary).
+- Edit Listings — Update existing listings (including uploading a new image).
+- Delete Listings — Remove your own listings securely.
+- Authentication — Protected routes using JWT (JSON Web Tokens).
+- Map Integration — show exact property location on a map using MapTiler.
+- Responsive UI — Mobile-first design using Tailwind CSS.
 
-Image Upload — Upload beautiful images (stored in Cloudinary).
-
-Edit Listings — Update existing listings (including uploading a new image).
-
-Delete Listings — Remove your own listings securely.
-
-Authentication — Protected routes using JWT (JSON Web Tokens).
-
-Map Integration — show exact property location on a map using MapTiler.
-
-Responsive UI — Mobile-first design using Tailwind CSS.
-
-Tech Stack
+## Tech Stack
 Frontend: Next.js
 
 Backend: Next.js API Routes
